@@ -1,0 +1,88 @@
+@echo off
+title Folder Content Lister
+color 0A
+echo.
+echo ========================================
+echo    FOLDER CONTENT LISTER
+echo ========================================
+echo.
+echo This tool will list all files and folders
+echo in the current directory.
+echo.
+pause
+echo.
+
+REM Get the current date and time for filename
+set datetime=%date:~-4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+set datetime=%datetime: =0%
+
+REM Create the output filename
+set output=folder_list_%datetime%.txt
+
+echo Creating list of all files and folders...
+echo.
+
+REM Write header to file
+echo FOLDER CONTENTS LIST > "%output%"
+echo ================================================ >> "%output%"
+echo Generated: %date% %time% >> "%output%"
+echo Location: %cd% >> "%output%"
+echo ================================================ >> "%output%"
+echo. >> "%output%"
+
+REM Count folders and files
+echo Counting items...
+set /a foldercount=0
+set /a filecount=0
+
+for /d %%D in (*) do set /a foldercount+=1
+for %%F in (*) do set /a filecount+=1
+
+echo Total Folders: %foldercount% >> "%output%"
+echo Total Files: %filecount% >> "%output%"
+echo. >> "%output%"
+echo ================================================ >> "%output%"
+echo. >> "%output%"
+
+REM List all folders first
+echo [FOLDERS] >> "%output%"
+echo. >> "%output%"
+for /d %%D in (*) do (
+    echo [FOLDER] %%D >> "%output%"
+)
+
+echo. >> "%output%"
+echo ================================================ >> "%output%"
+echo. >> "%output%"
+
+REM List all files
+echo [FILES] >> "%output%"
+echo. >> "%output%"
+for %%F in (*) do (
+    echo [FILE] %%F >> "%output%"
+)
+
+echo. >> "%output%"
+echo ================================================ >> "%output%"
+echo. >> "%output%"
+
+REM List everything with full tree structure
+echo [COMPLETE DIRECTORY TREE] >> "%output%"
+echo. >> "%output%"
+tree /f /a >> "%output%"
+
+echo.
+echo ========================================
+echo SUCCESS!
+echo ========================================
+echo.
+echo File saved as: %output%
+echo Location: %cd%
+echo.
+echo Opening the file now...
+echo.
+notepad "%output%"
+
+echo.
+echo Press any key to exit...
+pause >nul
